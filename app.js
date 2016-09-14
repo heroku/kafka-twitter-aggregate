@@ -116,8 +116,6 @@ return producer.init().then(function() {
                 avgPer60Seconds: rate60,
                 avgPer600Seconds: rate600
             }
-            
-            console.log('Rate:',rate,'/ sec |',rate60,'/ min |',rate600,'/ 10 min');
 
             producer.send({
                 topic: `${consumerTopic}-aggregate`,
