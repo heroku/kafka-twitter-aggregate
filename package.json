@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "baconjs": "^0.7.86",
+    "json-bigint": "^0.2.0",
     "lodash": "^4.15.0",
     "no-kafka": "git://github.com/crcastle/kafka.git#3.0"
   }
