@@ -1,0 +1,18 @@
+{
+  "name": "twitter-aggregate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "bin/start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "baconjs": "^0.7.86",
+    "lodash": "^4.15.0",
+    "no-kafka": "git://github.com/crcastle/kafka.git#3.0"
+  }
+}
