@@ -12,7 +12,7 @@ const webServer = require('./simple-web-server').startServer();
 const Kafka = require('no-kafka');
 const brokerUrls = process.env.KAFKA_URL.replace(/\+ssl/g,'');
 const configTopic = process.env.KAFKA_CONFIG_TOPIC;
-const consumerTopic = `${process.env.KAFKA_CONSUMER_TOPIC}-keyword`;
+const consumerTopic = process.env.KAFKA_CONSUMER_TOPIC;
 
 const ONE_SECOND = 1000;
 const ONE_MINUTE = ONE_SECOND * 60;
