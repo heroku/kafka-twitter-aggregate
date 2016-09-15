@@ -12,7 +12,7 @@ const webServer = require('./simple-web-server').startServer();
 const Kafka = require('no-kafka');
 const brokerUrls = process.env.KAFKA_URL.replace(/\+ssl/g,'');
 const configTopic = process.env.KAFKA_CONFIG_TOPIC;
-const consumerTopic = process.env.KAFKA_CONSUMER_TOPIC;
+const consumerTopicBase = process.env.KAFKA_CONSUMER_TOPIC;
 
 const ONE_SECOND = 1000;
 const ONE_MINUTE = ONE_SECOND * 60;
@@ -65,6 +65,9 @@ return producer.init().then(function() {
     console.log('Producer connected.');
     return consumer.init().then(function () {
         console.log('Consumer connected.');
+
+        const consumerTopic = `${consumerTopicBase}-keyword`;
+
         console.log('Consuming from topic:', consumerTopic);
 
         // Create Bacon stream from incoming Kafka messages
@@ -118,7 +121,7 @@ return producer.init().then(function() {
             }
 
             producer.send({
-                topic: `${consumerTopic}-aggregate`,
+                topic: `${consumerTopicBase}-aggregate`,
                 partition: 0,
                 message: {
                     value: JSONbig.stringify(msg)
