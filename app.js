@@ -17,6 +17,7 @@ const consumerTopicBase = process.env.KAFKA_CONSUMER_TOPIC;
 const ONE_SECOND = 1000;
 const ONE_MINUTE = ONE_SECOND * 60;
 const TEN_MINUTE = ONE_MINUTE * 10;
+const ONE_HOUR   = TEN_MINUTE * 6;
 
 /*
  * TODO: replace the env var by reading the comma-separated list of terms from the 'config' topic
@@ -92,9 +93,10 @@ return producer.init().then(function() {
         // Sample running count every second
         let sampledCountStream = count.sample(ONE_SECOND);
 
-        let oneMinBuffer = [];
-        let tenMinBuffer = [];
-        let lastCount    = 0;
+        let oneMinBuffer  = [];
+        let tenMinBuffer  = [];
+        let oneHourBuffer = [];
+        let lastCount     = 0;
 
         // For every value in sampledCountStream,
         // do some calculations and then produce a message
@@ -108,16 +110,18 @@ return producer.init().then(function() {
             if (oneMinBuffer.length > 60 ) oneMinBuffer.shift();
             if (tenMinBuffer.length > 600) tenMinBuffer.shift();
 
-            let rate    = diff / (ONE_SECOND/1000);
-            let rate60  = oneMinBuffer.length < 60  ? null : _.mean(oneMinBuffer);
-            let rate600 = tenMinBuffer.length < 600 ? null : _.mean(tenMinBuffer);
+            let rate     = diff / (ONE_SECOND/1000);
+            let rate60   = oneMinBuffer.length  < 60   ? null : _.mean(oneMinBuffer);
+            let rate600  = tenMinBuffer.length  < 600  ? null : _.mean(tenMinBuffer);
+            let rate3600 = oneHourBuffer.length < 3600 ? null : _.mean(oneHourBuffer);
 
             let msg = {
                 time: Date.now(),
                 count: value,
                 avgPerSecond: rate,
                 avgPer60Seconds: rate60,
-                avgPer600Seconds: rate600
+                avgPer600Seconds: rate600,
+                avgPer3600Seconds: rate3600
             }
 
             producer.send({
