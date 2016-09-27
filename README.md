@@ -6,13 +6,14 @@ This app is one component of a data processing pipeline example using [Apache Ka
 
 Make sure you have [Node.js](http://nodejs.org/) > 5.x, [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line) installed, and an [Apache Kafka on Heroku](https://www.heroku.com/kafka) cluster running.
 
-Additionally, you'll need to copy `.env.sample` to `.env` and provide values for all of the environment variables listed.
+You'll also need to copy `.env.sample` to `.env` and provide values for all of the environment variables listed.
 
 - `KAFKA_URL`: Comma-separated list of Kafka broker URLs
 - `KAFKA_CLIENT_CERT`: Contents of the Kafka client certificate. This is set on a Heroku app when the Apache Kafka on Heroku add-on is attached.
 - `KAFKA_CLIENT_CERT_KEY`: Contents of the Kafka client certificate key. This is set on a Heroku app when the Apache Kafka on Heroku add-on is attached.
 - `KAFKA_CONSUMER_TOPIC`: Kafka topic name from which to consume messages.
 
+And you'll need to update `Procfile` to include one process per keyword being tracked.
 
 ```sh
 git clone git@github.com:heroku/kafka-twitter-aggregate.git # or clone your own fork
@@ -34,6 +35,8 @@ heorku config:set KAFKA_CONSUMER_TOPIC= # Kafka topic from which to consume mess
 
 git push heroku master
 ```
+
+After the deploy is successful, scale up each process to `1`.  Scale the `web` process to zero.  You can do this from either the CLI (e.g. `heroku ps:scale dog=1`) or the Heroku dashboard.
 
 ## Documentation
 
