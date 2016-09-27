@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs' );
+
 const _ = require('lodash');
 
 // standard JSON library cannot handle size of numeric twitter ID values
@@ -7,12 +9,10 @@ const JSONbig = require('json-bigint');
 
 const Bacon = require('baconjs');
 
-const webServer = require('./simple-web-server').startServer();
-
 const Kafka = require('no-kafka');
-const brokerUrls = process.env.KAFKA_URL.replace(/\+ssl/g,'');
-const configTopic = process.env.KAFKA_CONFIG_TOPIC;
 const consumerTopicBase = process.env.KAFKA_CONSUMER_TOPIC;
+
+// const configTopic = process.env.KAFKA_CONFIG_TOPIC;
 
 const ONE_SECOND = 1000;
 const ONE_MINUTE = ONE_SECOND * 60;
@@ -37,11 +37,24 @@ let potentialKeywords = [];
 
 
 
+
+// Check that required Kafka environment variables are defined
+const cert = process.env.KAFKA_CLIENT_CERT
+const key  = process.env.KAFKA_CLIENT_CERT_KEY
+const url  = process.env.KAFKA_URL
+if (!cert) throw new Error('KAFKA_CLIENT_CERT environment variable must be defined.');
+if (!key) throw new Error('KAFKA_CLIENT_CERT_KEY environment variable must be defined.');
+if (!url) throw new Error('KAFKA_URL environment variable must be defined.');
+
+// Write certs to disk because that's how no-kafka library needs them
+fs.writeFileSync('./client.crt', process.env.KAFKA_CLIENT_CERT)
+fs.writeFileSync('./client.key', process.env.KAFKA_CLIENT_CERT_KEY)
+
 // Configure consumer client
 const consumer = new Kafka.SimpleConsumer({
     idleTimeout: 100,
     clientId: 'twitter-aggregate-consumer',
-    connectionString: brokerUrls,
+    connectionString: url.replace(/\+ssl/g,''),
     ssl: {
       certFile: './client.crt',
       keyFile: './client.key'
@@ -51,7 +64,7 @@ const consumer = new Kafka.SimpleConsumer({
 // Configure producer client
 const producer = new Kafka.Producer({
     clientId: 'tweet-aggregate-producer',
-    connectionString: brokerUrls,
+    connectionString: url.replace(/\+ssl/g,''),
     ssl: {
       certFile: './client.crt',
       keyFile: './client.key'
