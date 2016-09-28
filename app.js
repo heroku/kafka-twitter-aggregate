@@ -119,9 +119,11 @@ return producer.init().then(function() {
 
             oneMinBuffer.push(diff);
             tenMinBuffer.push(diff);
+            oneHourBuffer.push(diff);
 
             if (oneMinBuffer.length > 60 ) oneMinBuffer.shift();
             if (tenMinBuffer.length > 600) tenMinBuffer.shift();
+            if (oneHourBuffer.length > 3600) oneHourBuffer.shift();
 
             let rate     = diff / (ONE_SECOND/1000);
             let rate60   = oneMinBuffer.length  < 60   ? null : _.mean(oneMinBuffer);
