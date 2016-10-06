@@ -31,7 +31,7 @@ heroku create
 heroku addons:attach my-kafka-app::KAFKA
 # where my-kafka-app is the original app the kafka cluster was attached to
 
-heorku config:set KAFKA_CONSUMER_TOPIC= # Kafka topic from which to consume messages
+heroku config:set KAFKA_CONSUMER_TOPIC= # Kafka topic from which to consume messages
 
 git push heroku master
 ```
